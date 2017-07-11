@@ -32,7 +32,7 @@ export const checkout = (app, branch) => {
         .then(() => {
             return execute(`git checkout ${branch}`, dir)
                 .then(({stderr, stdout}) => {
-                    return execute('git pull', dir).then(() => {
+                    return execute('git pull --rebase', dir).then(() => {
                         return {stderr, stdout};
                     })
                 })

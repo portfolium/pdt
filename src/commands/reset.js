@@ -59,7 +59,7 @@ const _resetApp = (app) => {
             checkoutStderr = stderr;
             checkoutStdout = stdout;
             shell.cd(dir);
-            return execute('git pull', dir);
+            return execute('git pull --rebase', dir);
         })
         .then(({stderr, stdout}) => {
             pullStdErr = stderr;

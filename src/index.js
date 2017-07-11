@@ -4,9 +4,10 @@ import {
     checkout,
     deploy,
 } from './commands';
+const pkg = require('../package.json');
 
 commander
-    .version('1.0.0')
+    .version(pkg.version)
     .description('Portfolium Deploy Tool (pdt)');
 
 commander
