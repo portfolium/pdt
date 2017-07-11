@@ -1,0 +1,35 @@
+{
+  "name": "@portfolium/pdt",
+  "version": "1.0.0",
+  "description": "Portfolium Deploy Tool",
+  "main": "lib/index.js",
+  "dependencies": {
+    "chalk": "^2.0.1",
+    "commander": "^2.11.0",
+    "inquirer": "^3.1.1",
+    "lodash": "^4.17.4",
+    "q": "^1.5.0",
+    "shelljs": "^0.7.8",
+    "sprintf-js": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-header": "^1.8.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "pdt": "lib/index.js"
+  },
+  "homepage": "https://github.com/portfolium/pdt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/portfolium/pdt.git"
+  },
+  "author": "David Knell <dave@portfolium.com>",
+  "license": "ISC"
+}
