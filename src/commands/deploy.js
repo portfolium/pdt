@@ -3,6 +3,9 @@ import chalk from 'chalk';
 import {execute} from '../execute';
 import {checkout} from './checkout';
 import {App} from '../app';
+import git from '../git.js';
+import logger from '../logger.js';
+import {runDeployScript} from '../deployer.js';
 import config from '../config';
 const log = console.log;
 
@@ -16,25 +19,35 @@ export const deploy = (app, branch) => {
     // create the app object
     const _app = new App(found);
 
-    // run the checkout to use the branch selector
-    return checkout(app, branch)
-        .then((checkedOutBranch) => {
-            return _runDeployScript(_app.script, checkedOutBranch, config.projectDir);
-        });
-}
+    // get the repo dir
+    const dir = `${config.projectDir}/${_app.name}`;
 
-const _runDeployScript = (scriptName, branch, dir) => {
-    return execute(`${dir}/${scriptName} ${branch}`)
-        .then(({stderr, stdout, code}) => {
-            // show err if it's NOT the 'Already on <branch>' message
-            if (stderr && stderr.indexOf('Already on') === -1) {
-                log(`${chalk.red(stderr)}`);
-            }
-            if (stdout) {
-                log(`${chalk.green(stdout)}`);
-            }
-            if (code === 0) {
-                log(`${chalk.bgCyan.whiteBright('\nDeployed!\n')}`);
-            }
+    // invoke the branch selector if no branch was provided
+    if (!branch) {
+        return git.chooseBranch(dir)
+            .then((branch) => {
+                if (branch) {
+                    deploy(app, branch);
+                }
+            });
+    }
+
+    logger.prettyLine(_app.name, 'running', `deploy ${branch}`);
+
+    // fetch repo
+    return git.fetch(_app.name, dir)
+        .then(() => {
+            return git.checkout(branch, _app.name, dir);
+        })
+        .then(() => {
+            return git.pull(_app.name, dir);
+        })
+        .then(() => {
+            return runDeployScript(_app.script, branch, _app.name, config.projectDir);
+        })
+        .then(() => {
+            // replay logs
+            logger.playback(_app.name, 'info');
+            logger.prettyLine(_app.name, 'All finished!');
         });
 }

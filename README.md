@@ -49,7 +49,7 @@ param  branch (optional)   - the branch to checkout and deploy; if branch is emp
 
 Checkout the `branch` for `app` and run the deploy script
 
-### `checkout|co <app> [branch]`
+### `checkout|c <app> [branch]`
 
 ```
 param  app    (required)   - the app name to run the checkout (i.e. web)
@@ -66,7 +66,17 @@ param  app    (optional)   - the app name to reset (i.e. web or all);
                              if app is empty, it is set to 'all'
 ```
 
-Reset the `app` (or all apps) to master branch at the latest revision
+Reset the `app` (or all apps) to master branch at the latest revision and run the deploy script
+
+### `status|s [app] [-l|--long]`
+
+```
+param  app            (optional)   - the app name to show status for (i.e. web or all);
+                                     if app is empty, it is set to 'all'
+option [-l|--long]    (optional)   - show longer status message
+```
+
+Show the current branch for the `app` (or all apps) or full git status message if --list is used
 
 
 

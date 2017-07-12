@@ -2,9 +2,11 @@ import _ from 'lodash';
 import q from 'q';
 import chalk from 'chalk';
 import shell from 'shelljs';
-import {prettyLine, execLog} from '../logger.js';
+import logger from '../logger.js';
 import {execute} from '../execute';
 import {App} from '../app';
+import git from '../git.js';
+import {runDeployScript} from '../deployer.js';
 import config from '../config';
 const log = console.log;
 
@@ -46,27 +48,23 @@ const _resetApps = (apps) => {
     });
     q.all(funcs)
         .then(() => {
-            log(`${chalk.bgCyan.whiteBright('\All done!\n')}`);
+            logger.prettyLine(_app.name, 'All finished!');
         });
 }
 
 const _resetApp = (app) => {
-    let checkoutStderr, checkoutStdout, pullStdErr, pullStdout = null;
     const dir = `${config.projectDir}/${app.name}`;
 
-    return execute('git checkout master', dir)
-        .then(({stderr, stdout}) => {
-            checkoutStderr = stderr;
-            checkoutStdout = stdout;
-            shell.cd(dir);
-            return execute('git pull --rebase', dir);
+    return git.checkout('master', app.name, dir)
+        .then(() => {
+            return git.pull(app.name, dir);
         })
-        .then(({stderr, stdout}) => {
-            pullStdErr = stderr;
-            pullStdout = stdout;
-            prettyLine(app.name, 'reset to master');
-            execLog(checkoutStdout, checkoutStderr);
-            execLog(pullStdout, pullStdErr);
-            return stdout;
+        .then(() => {
+            return runDeployScript(app.script, 'master', app.name, config.projectDir);
+        })
+        .then(() => {
+            // replay logs
+            logger.playback(app.name, 'info');
+            logger.prettyLine(app.name, 'All finished!');
         });
 }
