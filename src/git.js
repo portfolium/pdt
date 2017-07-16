@@ -57,16 +57,22 @@ class Git {
     currentBranch(app, dir) {
         return execute('git rev-parse --abbrev-ref HEAD', dir)
             .then(({stdout, stderr, code}) => {
+                stdout = stdout.trim();
+                logger.prettyLine(app, 'current branch', stdout);
                 return stdout;
             });
     }
 
-    chooseBranch(dir) {
+    chooseBranch(app, dir) {
         return execute('git ls-remote --heads origin', dir)
             .then(({stderr, stdout}) => {
                 return this._parseBranches(stdout);
             })
-            .then(this._showBranchSelector)
+            .then((branches) => {
+                return this.currentBranch(app, dir).then((currentBranch) => {
+                    return this._showBranchSelector(branches, currentBranch);
+                });
+            })
             .then((branch) => {
                 if (branch) {
                     return branch;
@@ -86,13 +92,13 @@ class Git {
         });
     }
 
-    _showBranchSelector(branches) {
+    _showBranchSelector(branches, defaultBranch = 'master') {
         const question = {
             type: 'list',
             name: 'branch',
             message: 'Select a branch',
             choices: branches,
-            default: 'master',
+            default: defaultBranch,
             pageSize: 20,
         };
 

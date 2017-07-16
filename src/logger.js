@@ -36,6 +36,10 @@ class Logger {
         this.logs[group].push({log: log, level: level});
     }
 
+    out(log) {
+        log(log);
+    }
+
     playback(group, level) {
         if (!_.has(this.logs, group)) {
             return false;

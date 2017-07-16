@@ -24,7 +24,7 @@ export const deploy = (app, branch) => {
 
     // invoke the branch selector if no branch was provided
     if (!branch) {
-        return git.chooseBranch(dir)
+        return git.chooseBranch(_app.name, dir)
             .then((branch) => {
                 if (branch) {
                     deploy(app, branch);

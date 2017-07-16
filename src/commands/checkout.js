@@ -25,7 +25,7 @@ export const checkout = (app, branch) => {
 
     // invoke the branch selector if no branch was provided
     if (!branch) {
-        return git.chooseBranch(dir)
+        return git.chooseBranch(_app.name, dir)
             .then((branch) => {
                 if (branch) {
                     checkout(app, branch);
