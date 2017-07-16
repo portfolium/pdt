@@ -1,14 +1,10 @@
 import _ from 'lodash';
 import q from 'q';
-import chalk from 'chalk';
-import shell from 'shelljs';
 import logger from '../logger.js';
-import {execute} from '../execute';
 import {App} from '../app';
 import git from '../git.js';
 import {runDeployScript} from '../deployer.js';
 import config from '../config';
-const log = console.log;
 
 export const reset = (app) => {
     // default to all
@@ -28,8 +24,11 @@ export const reset = (app) => {
 
     // no such app
     if (appsToReset.length === 0) {
-        return log(`${chalk.white.bgRed('No such app:')} ${chalk.red(app)}`);
+        return logger.error(`App not found: ${app}`);
     }
+
+    // clean log dir
+    logger.purgeLogDir();
 
     // create an array of App objects
     appsToReset = _.map(appsToReset, (app) => {
@@ -48,7 +47,9 @@ const _resetApps = (apps) => {
     });
     q.all(funcs)
         .then(() => {
-            logger.prettyLine(_app.name, 'All finished!');
+            if (apps.length > 1) {
+                logger.prettyLine('*', 'All finished!');
+            }
         });
 }
 
@@ -65,6 +66,7 @@ const _resetApp = (app) => {
         .then(() => {
             // replay logs
             logger.playback(app.name, 'info');
-            logger.prettyLine(app.name, 'All finished!');
+            logger.queue(logger.pretty(app.name, 'All finished'), app.name, 'info', true);
+            return true;
         });
 }

@@ -1,21 +1,19 @@
 import _ from 'lodash';
 import q from 'q';
-import chalk from 'chalk';
-import inquirer from 'inquirer';
 import logger from '../logger.js';
 import git from '../git.js';
-import {execute} from '../execute';
 import {App} from '../app';
 import config from '../config';
-const log = console.log;
 
 export const checkout = (app, branch) => {
     // make sure app name is valid
     const found = _.find(config.apps, {name: app});
     if (!found) {
-        log(`${chalk.red(`App not found: ${app}`)}`);
-        return q.reject(`App not found: ${app}`);
+        return logger.error(`App not found: ${app}`);
     }
+
+    // clean log dir
+    logger.purgeLogDir();
 
     // create the app object
     const _app = new App(found);
@@ -33,7 +31,7 @@ export const checkout = (app, branch) => {
             });
     }
 
-    logger.prettyLine(_app.name, 'running', `git checkout ${branch}`);
+    logger.queue(logger.pretty(_app.name, 'running', `git checkout ${branch}`), _app.name, 'info', true);
 
     // fetch repo
     return git.fetch(_app.name, dir)
@@ -46,6 +44,6 @@ export const checkout = (app, branch) => {
         .then(() => {
             // replay logs
             logger.playback(_app.name, 'info');
-            logger.prettyLine(_app.name, 'All finished!');
+            logger.queue(logger.pretty(_app.name, 'All finished'), _app.name, 'info', true);
         });
 }

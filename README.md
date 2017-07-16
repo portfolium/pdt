@@ -47,7 +47,7 @@ param  branch (optional)   - the branch to checkout and deploy; if branch is emp
                              a branch selector is shown
 ```
 
-Checkout the `branch` for `app` and run the deploy script
+Checkout the `branch` for `app` and run the deploy script. Full output can be viewed with `pdt logs <app>`.
 
 ### `checkout|c <app> [branch]`
 
@@ -57,7 +57,7 @@ param  branch (optional)   - the branch to checkout; if branch is empty,
                              a branch selector is shown
 ```
 
-Checkout the `branch` for `app`
+Checkout the `branch` for `app`. Full output can be viewed with `pdt logs <app>`.
 
 ### `reset|r [app]`
 
@@ -66,7 +66,7 @@ param  app    (optional)   - the app name to reset (i.e. web or all);
                              if app is empty, it is set to 'all'
 ```
 
-Reset the `app` (or all apps) to master branch at the latest revision and run the deploy script
+Reset the `app` (or all apps) to master branch at the latest revision and run the deploy script. Full output can be viewed with `pdt logs <app>`.
 
 ### `status|s [app] [-l|--long]`
 
@@ -77,6 +77,15 @@ option [-l|--long]    (optional)   - show longer status message
 ```
 
 Show the current branch for the `app` (or all apps) or full git status message if --list is used
+
+### `logs|l <app>`
+
+```
+param  app            (optional)   - the app name to show the logs from the previous 
+                                     command (i.e. web)
+```
+
+Show the full output from the previous command run. All commands will save their output to be viewed with `pdt logs` except `status`.
 
 
 

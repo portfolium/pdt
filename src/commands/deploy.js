@@ -1,20 +1,19 @@
 import _ from 'lodash';
-import chalk from 'chalk';
-import {execute} from '../execute';
-import {checkout} from './checkout';
 import {App} from '../app';
 import git from '../git.js';
 import logger from '../logger.js';
 import {runDeployScript} from '../deployer.js';
 import config from '../config';
-const log = console.log;
 
 export const deploy = (app, branch) => {
     // make sure app name is valid
     const found = _.find(config.apps, {name: app});
     if (!found) {
-        return log(`${chalk.red(`App not found: ${app}`)}`);
+        return logger.error(`App not found: ${app}`);
     }
+
+    // clean log dir
+    logger.purgeLogDir();
 
     // create the app object
     const _app = new App(found);
@@ -32,7 +31,7 @@ export const deploy = (app, branch) => {
             });
     }
 
-    logger.prettyLine(_app.name, 'running', `deploy ${branch}`);
+    logger.queue(logger.pretty(_app.name, 'running', `deploy ${branch}`), _app.name, 'info', true);
 
     // fetch repo
     return git.fetch(_app.name, dir)
@@ -48,6 +47,6 @@ export const deploy = (app, branch) => {
         .then(() => {
             // replay logs
             logger.playback(_app.name, 'info');
-            logger.prettyLine(_app.name, 'All finished!');
+            logger.queue(logger.pretty(_app.name, 'All finished'), _app.name, 'info', true);
         });
 }

@@ -1,14 +1,9 @@
 import _ from 'lodash';
 import q from 'q';
-import chalk from 'chalk';
-import shell from 'shelljs';
 import logger from '../logger.js';
-import {execute} from '../execute';
 import {App} from '../app';
 import git from '../git.js';
-import {runDeployScript} from '../deployer.js';
 import config from '../config';
-const log = console.log;
 let long = false;
 
 export const status = (app, options) => {
@@ -31,7 +26,7 @@ export const status = (app, options) => {
 
     // no such app
     if (appsToShow.length === 0) {
-        return log(`${chalk.white.bgRed('No such app:')} ${chalk.red(app)}`);
+        return logger.error(`App not found: ${app}`);
     }
 
     // create an array of App objects

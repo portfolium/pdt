@@ -4,6 +4,7 @@ import {
     checkout,
     deploy,
     status,
+    logs,
 } from './commands';
 const pkg = require('../package.json');
 
@@ -35,6 +36,12 @@ commander
     .description('show the current branch for specified app')
     .option('-l, --long', 'long listing mode')
     .action(status);
+
+commander
+    .command('logs <app>')
+    .alias('l')
+    .description('show the logs for specified app')
+    .action(logs);
 
 commander.parse(process.argv);
 

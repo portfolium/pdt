@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import chalk from 'chalk';
+import shell from 'shelljs';
 const log = console.log;
 
 let instance = null;
@@ -17,12 +18,21 @@ class Logger {
         }
 
         this.logs = {};
+        this.home = shell.env['HOME'];
+        this.configDir = `${this.home}/.pdt`;
+        this.logDir = `${this.configDir}/logs`;
+
+        this._init();
 
         return instance;
     }
 
-    queue(log, group, level) {
-        if (!log || !group) {
+    _init() {
+        this.createLogDir();
+    }
+
+    queue(msg, group, level, toStdout = false) {
+        if (!msg || !group) {
             return false;
         }
 
@@ -33,11 +43,23 @@ class Logger {
             this.logs[group] = [];
         }
 
-        this.logs[group].push({log: log, level: level});
+        this.logs[group].push({log: msg, level: level});
+
+        // send log to stdout if specified
+        if (toStdout) {
+            log(msg);
+        }
+
+        // log to file
+        this.logToFile(msg, group, level);
     }
 
-    out(log) {
-        log(log);
+    out(msg) {
+        log(msg);
+    }
+
+    error(msg) {
+        log(`${chalk.red(msg)}`);
     }
 
     playback(group, level) {
@@ -46,6 +68,7 @@ class Logger {
         }
 
         _.each(this.logs[group], (l) => {
+            // display relevant logs
             if (l.level === level) {
                 log(l.log);
             }
@@ -74,12 +97,27 @@ class Logger {
         this.queue(stderr, group, 'error');
     }
 
-    execLog(stdout, stderr, verbose) {
-        if (verbose) {
-            log(stdout);
+    logToFile(msg, group, level) {
+        const logFile = `${this.logDir}/${group}.log`;
+        // TODO - come up with a better way to keep track of log files created
+        if (!shell.test('-f', logFile)) {
+            shell.touch(logFile);
         }
-        if (stderr) {
-            log(`${chalk.red(stderr)}`);
+        // add a single newline
+        msg = msg.trim() + '\n';
+        // write log to file
+        shell.ShellString(msg).toEnd(logFile);
+    }
+
+    createLogDir() {
+        if (!shell.test('-d', this.logDir)) {
+            shell.mkdir(this.logDir);
+        }
+    }
+
+    purgeLogDir() {
+        if (shell.test('-d', this.logDir)) {
+            shell.rm('-f', `${this.logDir}/*`);
         }
     }
 }

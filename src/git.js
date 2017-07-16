@@ -57,9 +57,7 @@ class Git {
     currentBranch(app, dir) {
         return execute('git rev-parse --abbrev-ref HEAD', dir)
             .then(({stdout, stderr, code}) => {
-                stdout = stdout.trim();
-                logger.prettyLine(app, 'current branch', stdout);
-                return stdout;
+                return stdout.trim();
             });
     }
 
@@ -70,6 +68,7 @@ class Git {
             })
             .then((branches) => {
                 return this.currentBranch(app, dir).then((currentBranch) => {
+                    logger.prettyLine(app, 'current branch', currentBranch);
                     return this._showBranchSelector(branches, currentBranch);
                 });
             })
