@@ -13,6 +13,9 @@ export const runDeployScript = (scriptName, branch, app, dir) => {
             }
             if (code === 0) {
                 logger.queue(logger.pretty(app, 'finished', `deploy script`), app, 'info');
+            } else {
+                // we have an error, show the user
+                logger.queue(logger.pretty(app, 'ERROR', `deploy script - check the logs with: pdt logs ${app}`, 'error'), app, 'info');
             }
         });
 }

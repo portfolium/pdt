@@ -75,10 +75,21 @@ class Logger {
         });
     }
 
-    pretty(title, action, message) {
+    pretty(title, action, message, actionLevel) {
         let msg = [];
+        let actionColor;
+        switch (actionLevel) {
+            case 'success':
+                actionColor = 'cyan';
+                break;
+            case 'error':
+                actionColor = 'red';
+                break;
+            default:
+                actionColor = 'cyan';
+        }
         msg.push(`${chalk.gray('[')}${chalk.magenta(title)}${chalk.gray(']')}`);
-        msg.push(`${chalk.cyan(action)}`);
+        msg.push(`${chalk[actionColor](action)}`);
         if (message) {
             msg.push(`${chalk.gray(message)}`);
         }
