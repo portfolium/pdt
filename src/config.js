@@ -44,6 +44,10 @@ class Config {
     get projectDir() {
         return this.config.projectDir;
     }
+
+    get altCommands() {
+        return this.config.altCommands;
+    }
 }
 
 export default new Config();

@@ -6,6 +6,7 @@ import {
     status,
     logs,
 } from './commands';
+import config from './config';
 const pkg = require('../package.json');
 
 commander

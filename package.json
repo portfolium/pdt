@@ -4,20 +4,21 @@
   "description": "Portfolium Deploy Tool",
   "main": "lib/index.js",
   "dependencies": {
-    "chalk": "^2.0.1",
-    "commander": "^2.11.0",
-    "inquirer": "^3.1.1",
-    "lodash": "^4.17.4",
-    "q": "^1.5.0",
-    "shelljs": "^0.7.8",
-    "sprintf-js": "^1.1.1"
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "inquirer": "^6.2.1",
+    "lodash": "^4.17.11",
+    "q": "^1.5.1",
+    "shelljs": "^0.8.3",
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-es2015": "^6.24.1",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-header": "^1.8.8"
+    "gulp-babel": "^8.0.0",
+    "gulp-header": "^2.0.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
